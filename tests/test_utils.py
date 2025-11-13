@@ -39,6 +39,10 @@ class TestUtils(unittest.TestCase):
     def test_safe_compare_digest_false_different_size(self):
         self.assertFalse(safe_compare_digest('/gg9a+LvFevTH1sd7', '/gg9a+LvFevTH1sd78'))
 
+    def test_safe_compare_digest_type_mismatch(self):
+        with self.assertRaises(TypeError):
+            safe_compare_digest('/gg9a+LvFevTH1sd7', b'/gg9a+LvFevTH1sd7')
+
 
 if __name__ == '__main__':
     unittest.main()

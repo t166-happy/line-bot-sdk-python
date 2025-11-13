@@ -57,18 +57,28 @@ def to_camel_case(text):
 
 @deprecated(reason="Use 'from linebot.v3.utils import safe_compare_digest' instead. See https://github.com/line/line-bot-sdk-python/blob/master/README.rst for more details.", version='3.0.0', category=LineBotSdkDeprecatedIn30)  # noqa: E501
 def safe_compare_digest(val1, val2):
-    """safe_compare_digest method.
+    """Return ``True`` if the two strings are equal, ``False`` otherwise.
 
-    :param val1: string or bytes for compare
+    ``safe_compare_digest`` previously failed with ``TypeError`` when the two
+    inputs were of different types (``str`` vs ``bytes``).  This behaviour was
+    inconsistent with :func:`hmac.compare_digest`.  The function now mirrors the
+    standard library implementation by requiring that both inputs are of the
+    same type.  A ``TypeError`` will be raised if this condition is not met.
+
+    :param val1: First value for comparison.
     :type val1: str | bytes
-    :param val2: string or bytes for compare
+    :param val2: Second value for comparison.
     :type val2: str | bytes
     """
+
+    if type(val1) is not type(val2):
+        raise TypeError('Inputs must be of the same type')
+
     if len(val1) != len(val2):
         return False
 
     result = 0
-    if PY3 and isinstance(val1, bytes) and isinstance(val2, bytes):
+    if PY3 and isinstance(val1, bytes):
         for i, j in zip(val1, val2):
             result |= i ^ j
     else:
